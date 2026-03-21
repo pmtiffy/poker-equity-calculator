@@ -326,6 +326,9 @@ input,select{font-family:inherit}
 .wbox.t .wn{color:var(--tie)}
 .wbox.l .wn{color:var(--lose)}
 .wk{font-size:10px;color:var(--tx2);text-transform:uppercase;letter-spacing:.04em;display:block}
+/* EQ definition note — shown below the three metric boxes */
+.eq-note{font-size:9px;color:var(--mu);margin-top:7px;line-height:1.5;text-align:center;
+  padding:4px 8px;background:var(--s2);border-radius:5px;border:1px solid var(--bd)}
 .hint{text-align:center;padding:24px 20px;color:var(--tx2);font-size:12px;line-height:1.9;letter-spacing:.01em}
 .spin-r{display:none;align-items:center;gap:6px;font-size:10px;color:var(--mu);margin-top:6px}
 .spin-r.on{display:flex}
@@ -685,7 +688,6 @@ input,select{font-family:inherit}
   .pk{width:28px;height:38px}
   .pk .pr2{font-size:10px}
 }
-
 </style>
 </head>
 <body>
@@ -693,7 +695,7 @@ input,select{font-family:inherit}
 
 <script>
 /* ═══════════════════════════════════════════════
-   § 1  I18N — all keys, all 4 languages complete
+   § 1  I18N
 ═══════════════════════════════════════════════ */
 var L = {
 en:{
@@ -709,7 +711,10 @@ en:{
   pickFor:'Selecting for',
   selTip:'Click any card to select. Used cards are dimmed.',
   eq:'HERO EQUITY',
-  win:'WIN', tie:'TIE', lose:'LOSE',
+  /* EQ = expected pot share; includes split-pot scenarios.
+     EQ + TIE + LOSE do not necessarily sum to 100%. */
+  win:'EQ', tie:'TIE', lose:'LOSE',
+  eqNote:'EQ = expected pot share (includes split pots). These values do not sum to 100%.',
   calcing:'Calculating…',
   nocard:'Click any card slot to start',
   hand:'BEST HAND',
@@ -758,11 +763,9 @@ en:{
   tutNext:'Next →',
   tutDone:'Start Playing',
   tutPrev:'← Back',
-  /* hand panel */
   bestHandLabel:'Best 5-card hand',
   inBestHand:'Used in best hand',
   notInBest:'Not used',
-  /* outs panel */
   nextCard:'Next card',
   byShowdown:'By showdown',
   onTurn:'on turn',
@@ -798,10 +801,10 @@ en:{
   villOutsLabel:'Villain\'s outs (can catch up)',
   preflopHint:'Deal the flop to see your best hand',
   tutSteps:[
-    {icon:'🃏', title:'Welcome to Poker Equity Calculator', text:'This tool shows you the mathematical probability of winning any Texas Hold\'em hand. Select cards and see real-time win/tie/lose percentages.'},
+    {icon:'🃏', title:'Welcome to Poker Equity Calculator', text:'This tool shows you the mathematical probability of winning any Texas Hold\'em hand. Select cards and see real-time equity percentages.'},
     {icon:'👆', title:'Click a Card Slot', text:'Tap any grey "+" slot on the poker table — either your Hero hand (bottom) or a Villain hand (top) — to open the card picker.'},
     {icon:'🎴', title:'Pick Your Cards', text:'Choose a card\'s suit row, then click the rank. Used cards are greyed out. Your selection appears on the table immediately.'},
-    {icon:'📊', title:'Read Your Equity', text:'The right panel shows Win %, Tie %, and Lose % in real time. Add community cards (Flop, Turn, River) to see how odds change street by street.'},
+    {icon:'📊', title:'Read Your Equity', text:'The right panel shows EQ %, Tie %, and Lose % in real time. Add community cards (Flop, Turn, River) to see how odds change street by street.'},
     {icon:'📐', title:'Hand Ranges Tab', text:'The 13×13 grid shows all 169 starting hand types. Click any position preset (BTN, CO, MP…) to see GTO opening ranges. Brighter = stronger.'},
     {icon:'🎯', title:'Odds & Reference Tab', text:'Find common matchup equities, drawing odds (outs), and starting hand win-rates — useful for study and review sessions.'}
   ]
@@ -819,7 +822,9 @@ zh:{
   pickFor:'正在選牌',
   selTip:'點選牌面加入。已使用的牌顯示為暗色。',
   eq:'我方勝率',
-  win:'勝', tie:'和局', lose:'敗',
+  /* 佔率 = 底池期望份額（含平手均分）；三欄數值相加不等於 100% */
+  win:'佔率', tie:'和局', lose:'敗',
+  eqNote:'佔率為底池期望值（含平手均分情況），三項數字相加不等於 100%。',
   calcing:'計算中…',
   nocard:'點擊牌位開始選牌',
   hand:'最佳手牌',
@@ -868,11 +873,9 @@ zh:{
   tutNext:'下一步 →',
   tutDone:'開始使用',
   tutPrev:'← 上一步',
-  /* hand panel */
   bestHandLabel:'最佳五張牌組合',
   inBestHand:'已計入最佳牌型',
   notInBest:'未使用',
-  /* outs panel */
   nextCard:'下一張命中率',
   byShowdown:'最終命中率',
   onTurn:'在轉牌時',
@@ -908,10 +911,10 @@ zh:{
   villOutsLabel:'對手可翻盤的牌數',
   preflopHint:'發出翻牌後即可查看最佳牌型',
   tutSteps:[
-    {icon:'🃏', title:'歡迎使用德州撲克勝率計算機', text:'本工具能即時計算德州撲克的手牌勝率，選好牌面後就能看到精確的勝、和、敗機率。'},
+    {icon:'🃏', title:'歡迎使用德州撲克勝率計算機', text:'本工具能即時計算德州撲克的手牌勝率，選好牌面後就能看到精確的佔率、和局、敗率數字。'},
     {icon:'👆', title:'點擊牌位開始', text:'點擊牌桌上任意灰色「+」格子（我方底牌在下、對手底牌在上），即可開啟選牌視窗。'},
     {icon:'🎴', title:'選擇牌面', text:'選牌器中先點選花色行，再點選點數。已使用的牌為暗色無法選取，選好後牌面立即出現在牌桌。'},
-    {icon:'📊', title:'解讀勝率數字', text:'右側面板即時顯示勝率（Win%）、和局（Tie%）、敗率（Lose%）。加入公牌（翻牌、轉牌、河牌）可觀察各個街道的機率變化。'},
+    {icon:'📊', title:'解讀勝率數字', text:'右側面板即時顯示佔率（EQ%）、和局（Tie%）、敗率（Lose%）。加入公牌（翻牌、轉牌、河牌）可觀察各個街道的機率變化。'},
     {icon:'📐', title:'手牌範圍頁籤', text:'13×13 矩陣涵蓋所有 169 種起手牌組合。點選位置預設（BTN、CO、MP 等）可載入 GTO 開牌範圍，顏色越亮表示牌力越強。'},
     {icon:'🎯', title:'賠率速查頁籤', text:'查閱常見對決勝率、補牌機率速查表及各起手牌強度數據，適合賽後復盤與學習使用。'}
   ]
@@ -929,7 +932,9 @@ ja:{
   pickFor:'選択中',
   selTip:'カードをクリックして選択。使用済みはグレーで表示されます。',
   eq:'自分のエクイティ',
-  win:'勝ち', tie:'引き分け', lose:'負け',
+  /* EQ = 期待ポット獲得率（平手の配分込み）；3値の合計は100%にならない */
+  win:'EQ', tie:'引き分け', lose:'負け',
+  eqNote:'EQは期待ポット獲得率（平手の配分込み）です。3つの値の合計は100%になりません。',
   calcing:'計算中…',
   nocard:'カードスロットをクリックして始める',
   hand:'ベストハンド',
@@ -978,11 +983,9 @@ ja:{
   tutNext:'次へ →',
   tutDone:'始める',
   tutPrev:'← 戻る',
-  /* hand panel */
   bestHandLabel:'ベストハンド（5枚）',
   inBestHand:'ベストハンドに使用',
   notInBest:'不使用',
-  /* outs panel */
   nextCard:'次のカード確率',
   byShowdown:'ショーダウンまでの確率',
   onTurn:'ターン後',
@@ -1013,15 +1016,15 @@ ja:{
   rqSuited:'同スート',
   rqOffsuit:'異スート',
   approxShort:'近似',
-  approxNote:'モンテカルロ法（{n}回取樣）による近似値です。多人数局やプリフロップは取樣計算を使用します。',
+  approxNote:'モンテカルロ法（{n}回サンプリング）による近似値です。多人数局やプリフロップは抽樣計算を使用します。',
   mTie:'引き分け',
-  villOutsLabel:'相手がリードできるアウツ',
+  villOutsLabel:'相手のアウツ（逆転の可能性）',
   preflopHint:'フロップを配るとベストハンドが表示されます',
   tutSteps:[
-    {icon:'🃏', title:'ポーカー勝率計算機へようこそ', text:'テキサスホールデムの手牌勝率をリアルタイムで計算するツールです。カードを選ぶと勝ち・引き分け・負けの確率が即座に表示されます。'},
+    {icon:'🃏', title:'ポーカー勝率計算機へようこそ', text:'テキサスホールデムの手牌エクイティをリアルタイムで計算するツールです。カードを選ぶとEQ・引き分け・負けの確率が即座に表示されます。'},
     {icon:'👆', title:'カードスロットをクリック', text:'テーブル上の灰色「+」スロット（自分のハンド：下、相手のハンド：上）をタップするとカード選択画面が開きます。'},
     {icon:'🎴', title:'カードを選ぶ', text:'スートの行を選び、ランクをクリックしてください。使用済みはグレー表示です。選択後すぐにテーブルへ反映されます。'},
-    {icon:'📊', title:'エクイティを確認', text:'右側パネルにWin%・Tie%・Lose%がリアルタイム表示。コミュニティカード（フロップ・ターン・リバー）を加えて各ストリートのオッズ変化を確認できます。'},
+    {icon:'📊', title:'エクイティを確認', text:'右側パネルにEQ%・引き分け%・負け%がリアルタイム表示。コミュニティカード（フロップ・ターン・リバー）を加えて各ストリートのオッズ変化を確認できます。'},
     {icon:'📐', title:'ハンドレンジタブ', text:'13×13グリッドで169種類のスターティングハンドを表示。ポジションプリセット（BTN・CO・MPなど）でGTOオープニングレンジを読み込めます。'},
     {icon:'🎯', title:'オッズ表タブ', text:'主なマッチアップのエクイティ、ドローオッズ（アウツ）、スターティングハンドの強度一覧を参照できます。復習や学習に役立ちます。'}
   ]
@@ -1039,7 +1042,9 @@ ko:{
   pickFor:'선택 중',
   selTip:'카드를 클릭해서 선택하세요. 이미 사용 중인 카드는 흐리게 표시됩니다.',
   eq:'내 에쿼티',
-  win:'승', tie:'무승부', lose:'패',
+  /* EQ = 기대 팟 획득률（동률 배분 포함）；세 값의 합이 100%가 되지 않을 수 있음 */
+  win:'EQ', tie:'무승부', lose:'패',
+  eqNote:'EQ는 기대 팟 획득률(동률 배분 포함)입니다. 세 값의 합이 100%가 되지 않을 수 있습니다.',
   calcing:'계산 중…',
   nocard:'카드 슬롯을 클릭해서 시작하세요',
   hand:'베스트 핸드',
@@ -1088,11 +1093,9 @@ ko:{
   tutNext:'다음 →',
   tutDone:'시작하기',
   tutPrev:'← 이전',
-  /* hand panel */
   bestHandLabel:'베스트 5장 조합',
   inBestHand:'베스트 핸드에 포함',
   notInBest:'미사용',
-  /* outs panel */
   nextCard:'다음 카드 히트 확률',
   byShowdown:'쇼다운까지 확률',
   onTurn:'턴 이후',
@@ -1128,10 +1131,10 @@ ko:{
   villOutsLabel:'상대의 역전 가능 카드 수',
   preflopHint:'플랍을 배분하면 베스트 핸드가 표시됩니다',
   tutSteps:[
-    {icon:'🃏', title:'포커 에쿼티 계산기에 오신 것을 환영합니다', text:'텍사스 홀덤 핸드의 수학적 승률을 실시간으로 계산합니다. 카드를 선택하면 승/무/패 확률이 바로 표시됩니다.'},
+    {icon:'🃏', title:'포커 에쿼티 계산기에 오신 것을 환영합니다', text:'텍사스 홀덤 핸드의 에쿼티를 실시간으로 계산합니다. 카드를 선택하면 EQ·무승부·패 확률이 바로 표시됩니다.'},
     {icon:'👆', title:'카드 슬롯 클릭하기', text:'포커 테이블의 회색 "+" 슬롯(내 핸드: 아래, 상대 핸드: 위)을 클릭하면 카드 선택 창이 열립니다.'},
     {icon:'🎴', title:'카드 선택하기', text:'수트 행을 먼저 선택한 뒤 랭크를 클릭하세요. 사용 중인 카드는 흐리게 표시됩니다. 선택 즉시 테이블에 반영됩니다.'},
-    {icon:'📊', title:'에쿼티 읽는 법', text:'오른쪽 패널에 승(Win%), 무(Tie%), 패(Lose%)가 실시간으로 표시됩니다. 커뮤니티 카드(플랍·턴·리버)를 추가하면 각 스트리트별 확률 변화를 확인할 수 있습니다.'},
+    {icon:'📊', title:'에쿼티 읽는 법', text:'오른쪽 패널에 EQ%·무승부%·패%가 실시간으로 표시됩니다. 커뮤니티 카드(플랍·턴·리버)를 추가하면 각 스트리트별 확률 변화를 확인할 수 있습니다.'},
     {icon:'📐', title:'핸드 레인지 탭', text:'13×13 그리드에서 169가지 스타팅 핸드를 확인하세요. 포지션 프리셋(BTN, CO, MP 등)을 클릭하면 GTO 오프닝 레인지를 불러옵니다.'},
     {icon:'🎯', title:'오즈 참고표 탭', text:'주요 매치업 에쿼티, 드로우 오즈(아웃츠), 스타팅 핸드 강도를 참고할 수 있습니다. 핸드 복기와 학습에 유용합니다.'}
   ]
@@ -1140,7 +1143,7 @@ ko:{
 
 function dlang(){
   var p=new URLSearchParams(location.search).get('lang');
-  if(p==='auto')p=null; /* auto = browser default */
+  if(p==='auto')p=null;
   var s=(function(){try{return localStorage.getItem('pce-lang');}catch(e){return null;}})();
   var b=(navigator.language||'en').toLowerCase().split('-')[0];
   var map={zh:'zh',ja:'ja',ko:'ko'};
@@ -1159,6 +1162,18 @@ function cR(c){return c>>2} function cS(c){return c&3}
 function mk(r,s){return(r<<2)|s}
 function cStr(c){return c<0?'?':RK[cR(c)]+SU[cS(c)]}
 
+/* eval5: score exactly 5 cards. Higher score = stronger hand.
+   Score bands (non-overlapping):
+     9,000,000        Royal flush
+     8,000,000+st     Straight flush  (st = high card rank)
+     7,000,000+…      Four of a kind
+     6,000,000+…      Full house
+     5,000,000+…      Flush           (base-13 rank encoding)
+     4,000,000+st     Straight
+     3,000,000+…      Three of a kind
+     2,000,000+…      Two pair
+     1,000,000+…      One pair
+     0+…              High card       (base-13 rank encoding) */
 function eval5(cs){
   if(!cs||cs.length<5)return 0;
   var r=[cR(cs[0]),cR(cs[1]),cR(cs[2]),cR(cs[3]),cR(cs[4])].sort(function(a,b){return b-a});
@@ -1179,12 +1194,27 @@ function eval5(cs){
   if(fl)return 5000000+r0*28561+r1*2197+r2*169+r3*13+r4;
   if(st>=0)return 4000000+st;
   if(c0===3)return 3000000+r0*169+r1*13+r2;
-  if(c0===2&&c1===2){var hi=Math.max(r0,r1),lo=Math.min(r0,r1);return 2000000+hi*169+lo*13+r2}
+  /* g is sorted [count desc, rank desc]; for two pair r0 >= r1 always holds */
+  if(c0===2&&c1===2)return 2000000+r0*169+r1*13+r2;
   if(c0===2)return 1000000+r0*2197+r1*169+r2*13+r3;
   return r0*28561+r1*2197+r2*169+r3*13+r4;
 }
+
+/* best5: return the highest eval5 score from n cards (5 ≤ n ≤ 7).
+   n=6: enumerate C(6,1)=6 subsets, removing one card each time.
+   n=7: enumerate C(7,2)=21 subsets, removing two cards each time. */
 function best5(cards){
-  var n=cards.length;if(n<5)return 0;if(n===5)return eval5(cards);
+  var n=cards.length;
+  if(n<5)return 0;
+  if(n===5)return eval5(cards);
+  if(n===6){
+    var best=0;
+    for(var i=0;i<6;i++){
+      var f=[];for(var k=0;k<6;k++)if(k!==i)f.push(cards[k]);
+      var sc=eval5(f);if(sc>best)best=sc;
+    }
+    return best;
+  }
   var best=0;
   for(var i=0;i<n-1;i++)for(var j=i+1;j<n;j++){
     var f=[];for(var k=0;k<n;k++)if(k!==i&&k!==j)f.push(cards[k]);
@@ -1192,23 +1222,39 @@ function best5(cards){
   }
   return best;
 }
+
+/* best5Cards: same enumeration as best5, but returns the winning 5-card array. */
 function best5Cards(cards){
   var n=cards.length;
   if(n<5)return cards.slice();
   if(n===5)return cards.slice();
   var best=0,bestF=cards.slice(0,5);
-  for(var i=0;i<n-1;i++)for(var j=i+1;j<n;j++){
-    var f=[];for(var k=0;k<n;k++)if(k!==i&&k!==j)f.push(cards[k]);
-    if(f.length===5){var sc=eval5(f);if(sc>best){best=sc;bestF=f.slice();}}
+  if(n===6){
+    for(var i=0;i<6;i++){
+      var f=[];for(var k=0;k<6;k++)if(k!==i)f.push(cards[k]);
+      var sc=eval5(f);if(sc>best){best=sc;bestF=f.slice();}
+    }
+  } else {
+    for(var i=0;i<n-1;i++)for(var j=i+1;j<n;j++){
+      var f=[];for(var k=0;k<n;k++)if(k!==i&&k!==j)f.push(cards[k]);
+      if(f.length===5){var sc=eval5(f);if(sc>best){best=sc;bestF=f.slice();}}
+    }
   }
   return bestF;
 }
+
 function hcat(sc){return Math.min(9,Math.floor(sc/1000000))}
 function hname(sc){return tx('handRanks')[hcat(sc)]||'?'}
 
-function countOuts(hc,vc,cm){
+/* countOuts: return the deck cards that move hero from behind to ahead vs vc.
+   allKnownVillainCards excludes all opponents' hole cards so the denominator
+   (rem) and numerator (outCards) use the same card universe. */
+function countOuts(hc,vc,cm,allKnownVillainCards){
   if(cm.length<3||cm.length>=5)return null;
-  var u={};hc.forEach(function(c){u[c]=1});vc.forEach(function(c){u[c]=1});cm.forEach(function(c){u[c]=1});
+  var u={};
+  hc.forEach(function(c){u[c]=1});
+  (allKnownVillainCards||vc).forEach(function(c){u[c]=1});
+  cm.forEach(function(c){u[c]=1});
   var deck=[];for(var i=0;i<52;i++)if(!u[i])deck.push(i);
   if(best5(hc.concat(cm))>best5(vc.concat(cm)))return null;
   var outCards=[];
@@ -1216,12 +1262,39 @@ function countOuts(hc,vc,cm){
     var c=deck[i];
     if(best5(hc.concat(cm).concat([c]))>best5(vc.concat(cm).concat([c])))outCards.push(c);
   }
-  return outCards; /* array of card integers; length = outs count */
+  return outCards;
 }
 
 /* ═══════════════════════════════════════════════
    § 3  EQUITY ENGINE
-═══════════════════════════════════════════════ */
+
+   Three separate accumulators are maintained per player per simulation run:
+
+     ev[i]   += 1/cnt  — fractional pot share (EV). A three-way chop
+                          contributes 1/3 to each player's ev[], so
+                          win% = ev/total reflects expected pot ownership,
+                          not outright-win frequency.
+     wins[i] += 1      — incremented only when the player wins alone (cnt=1).
+     ties[i] += 1      — incremented when the player shares the best hand (cnt>1).
+
+   Output metrics:
+     EQ%   = ev[i] / total          — expected pot share, the primary display metric
+     Tie%  = ties[i] / total        — probability of being in a multi-way tie
+     Lose% = 1 − wins[i]/total − ties[i]/total  — always ≥ 0
+
+   Because EQ% folds split-pot contributions into its value, EQ + Tie + Lose
+   do not sum to 100%. This is expected behaviour, not an error.
+
+   Sample counts by remaining streets (nd):
+     nd=0 (river)         exact enumeration, 1 run
+     nd=1 (turn→river)    exact, ≤ 44 runs
+     nd=2 (flop→river)    exact, ≤ C(45,2) = 990 runs
+     nd=3                 Monte Carlo, 20,000 samples
+     nd=4                 Monte Carlo, 30,000 samples
+     nd=5, ≤4 players     Monte Carlo, 50,000 samples
+     nd=5, >4 players     Monte Carlo, 100,000 samples
+
+   Approximate results are displayed as integers to match actual precision. */
 function calcEq(players,comm){
   var cm=comm.filter(function(c){return c>=0});
   var valid=players.filter(function(p){return p[0]>=0&&p[1]>=0});
@@ -1229,33 +1302,51 @@ function calcEq(players,comm){
   var u={};valid.forEach(function(p){u[p[0]]=1;u[p[1]]=1});cm.forEach(function(c){u[c]=1});
   var deck=[];for(var i=0;i<52;i++)if(!u[i])deck.push(i);
   var nd=5-cm.length,n=valid.length;
-  var wins=new Array(n).fill(0),ties=new Array(n).fill(0),total=0;
+  var wins=new Array(n).fill(0);
+  var ties=new Array(n).fill(0);
+  var ev=new Array(n).fill(0);
+  var total=0;
   function run(ex){
     var bd=cm.concat(ex);
     var sc=valid.map(function(p){return best5(p.concat(bd))});
     var mx=0;for(var i=0;i<n;i++)if(sc[i]>mx)mx=sc[i];
     var cnt=sc.filter(function(s){return s===mx}).length;
-    for(var i=0;i<n;i++)if(sc[i]===mx){if(cnt>1)ties[i]++;else wins[i]++;}
+    for(var i=0;i<n;i++){
+      if(sc[i]===mx){
+        ev[i]+=1/cnt;
+        if(cnt===1){wins[i]++;}else{ties[i]++;}
+      }
+    }
     total++;
   }
   if(nd===0){run([]);}
   else if(nd===1){for(var i=0;i<deck.length;i++)run([deck[i]]);}
   else if(nd===2){
-    if(deck.length<=48){/* Exact enumeration for flop (all player counts) — max C(48,2)=1128 combos */
-      for(var i=0;i<deck.length;i++)for(var j=i+1;j<deck.length;j++)run([deck[i],deck[j]]);
-    } else{for(var it=0;it<5000;it++){var d=deck.slice();for(var k=0;k<2;k++){var jj=k+Math.floor(Math.random()*(d.length-k));var t=d[k];d[k]=d[jj];d[jj]=t;}run(d.slice(0,2));}}
+    for(var i=0;i<deck.length;i++)for(var j=i+1;j<deck.length;j++)run([deck[i],deck[j]]);
   } else {
-    var n2=players.length; var IT=nd>=5?(n2>4?100000:50000):nd>=3?20000:10000;
+    var n2=players.length;
+    /* nd=4 uses 30,000 samples (raised from 10,000) for better precision */
+    var IT=nd>=5?(n2>4?100000:50000):nd===4?30000:20000;
     for(var it=0;it<IT;it++){var d2=deck.slice();for(var k=0;k<nd;k++){var jj2=k+Math.floor(Math.random()*(d2.length-k));var t2=d2[k];d2[k]=d2[jj2];d2[jj2]=t2;}run(d2.slice(0,nd));}
   }
-  var exact=(nd===0)||(nd===1)||(nd===2&&deck.length<=48);
-  return {results:valid.map(function(_,i){return{win:wins[i]/total,tie:ties[i]/total,lose:1-wins[i]/total-ties[i]/total}}),exact:exact,samples:total};
+  var exact=(nd===0)||(nd===1)||(nd===2);
+  return {results:valid.map(function(_,i){return{
+    win:ev[i]/total,
+    tie:ties[i]/total,
+    lose:1-wins[i]/total-ties[i]/total
+  }}),exact:exact,samples:total,nd:nd};
 }
 
 /* ═══════════════════════════════════════════════
    § 4  RANGE DATA
 ═══════════════════════════════════════════════ */
 var MN=['A','K','Q','J','T','9','8','7','6','5','4','3','2'];
+
+/* cellH: canonical notation for a cell in the 13×13 range matrix.
+   MN is descending (index 0 = Ace, 12 = Deuce).
+   Upper triangle (r<c): suited  — MN[r] is the higher rank → e.g. "AKs".
+   Lower triangle (r>c): offsuit — MN[c] is the higher rank → e.g. "AKo".
+   Diagonal (r===c): pocket pair. */
 function cellH(r,c){if(r===c)return MN[r]+MN[c];if(r<c)return MN[r]+MN[c]+'s';return MN[c]+MN[r]+'o'}
 function cellC(r,c){return r===c?6:r<c?4:12}
 var POS={
@@ -1298,7 +1389,7 @@ var G={
   preset:'BTN', rsel:new Set(POS.BTN),
   tutStep:0, tutActive:false,
   modal:null,
-  phase:'setup'   /* 'setup' = player count picker; 'play' = table */
+  phase:'setup'
 };
 
 function handName(score){
@@ -1308,10 +1399,10 @@ function handName(score){
   if(score>=3000000)return'Three of a Kind';if(score>=2000000)return'Two Pair';
   if(score>=1000000)return'One Pair';return'High Card';
 }
+
 /* ═══════════════════════════════════════════════
    § 6  RENDER HELPERS
 ═══════════════════════════════════════════════ */
-/* Use three separate data-s* attrs to avoid JSON-in-attr quoting bugs */
 function sa(type,pidx,pos){return ' data-action="slot" data-stype="'+type+'" data-spidx="'+pidx+'" data-spos="'+pos+'"'}
 function isSel(type,pidx,pos){return G.sel&&G.sel.type===type&&G.sel.pidx===pidx&&G.sel.pos===pos}
 
@@ -1321,30 +1412,26 @@ function mkCardEl(cidx,type,pidx,pos){
   if(cidx<0)return'<div class="empty-slot'+ring+'"'+attrs+'>+</div>';
   var rk=RK[cR(cidx)],su=SU[cS(cidx)];
   var col=RED[cS(cidx)]?'red':'blk';
-  /* × clear button: separate data-action so it doesn't open picker */
   var clr='<button class="card-clr" data-action="clearslot" data-stype="'+type+'" data-spidx="'+pidx+'" data-spos="'+pos+'" title="Remove">\u00d7</button>';
   return'<div class="card-wrap"><div class="card '+col+ring+'"'+attrs+'><span class="cr">'+rk+'</span><span class="cs">'+su+'</span></div>'+clr+'</div>';
 }
 
 function renderFelt(){
-  /* Opponents row — each villain has inline × delete */
   var opp='';
   for(var i=1;i<G.players.length;i++){
     var p=G.players[i];
     var eq=G.eq?G.eq[i]:null;
-    var et=eq?((eq.win*100).toFixed(1)+'%'+(eq.tie>0.001?'<br><span class="p-eq-tie">T:'+( eq.tie*100).toFixed(1)+'%</span>':'')):' —';
+    var et=eq?((eq.win*100).toFixed(1)+'%'+(eq.tie>0.001?'<br><span class="p-eq-tie">T:'+(eq.tie*100).toFixed(1)+'%</span>':'')):' —';
     var ec=eq?(eq.win>0.55?' ew':eq.lose>0.55?' el':''):'';
     var lbl=G.players.length>2?(tx('vill')+' '+i):tx('vill');
-    /* × button to delete this specific villain */
     var del='<button class="p-del" data-action="delvill" data-vidx="'+i+'" title="Remove">\u00d7</button>';
     opp+='<div class="player">'
       +'<div class="p-lbl-wrap"><div class="p-lbl">'+lbl+'</div>'+del+'</div>'
       +'<div class="p-cards">'+mkCardEl(p.cards[0],'p',i,0)+mkCardEl(p.cards[1],'p',i,1)+'</div>'
       +'<div class="p-eq'+ec+'">'+et+'</div></div>';
   }
-  /* Add player button — only if <6 players */
   var addBtn=G.players.length<9
-    ?'<button class="p-add-btn" data-action="addp">+</button>':''
+    ?'<button class="p-add-btn" data-action="addp">+</button>':'';
 
   var h=G.players[0];
   var heq=G.eq?G.eq[0]:null;
@@ -1357,10 +1444,8 @@ function renderFelt(){
 
   var cc='',st='';
   for(var i=0;i<5;i++){
-    /* Slot i is only accessible if all previous community slots are filled */
     var prevFilled=(i===0)||G.comm[i-1]>=0;
     if(!prevFilled){
-      /* Locked / greyed out - not clickable */
       cc+='<div class="empty-slot locked" title="Place previous cards first">\u2014</div>';
     } else {
       cc+=mkCardEl(G.comm[i],'c',i,0);
@@ -1378,66 +1463,38 @@ function renderFelt(){
     +'</div>';
 }
 
-/* ── Preflop equity table ── */
 var PFE={
-/* Pocket pairs */
 'AA':85.3,'KK':82.4,'QQ':79.9,'JJ':77.5,'TT':75.1,'99':72.1,'88':69.1,'77':66.2,'66':63.3,'55':60.3,'44':57.0,'33':53.7,'22':50.3,
-/* Ace-x suited */
 'AKs':67.0,'AQs':65.7,'AJs':64.4,'ATs':63.3,'A9s':62.1,'A8s':61.0,'A7s':60.2,'A6s':58.9,'A5s':59.0,'A4s':57.8,'A3s':57.0,'A2s':56.3,
-/* Ace-x offsuit */
 'AKo':65.4,'AQo':63.8,'AJo':62.0,'ATo':60.5,'A9o':58.4,'A8o':57.0,'A7o':55.8,'A6o':54.5,'A5o':54.7,'A4o':53.4,'A3o':52.6,'A2o':51.9,
-/* King-x suited */
 'KQs':62.4,'KJs':61.1,'KTs':59.8,'K9s':57.5,'K8s':55.4,'K7s':54.4,'K6s':53.4,'K5s':52.5,'K4s':51.5,'K3s':50.8,'K2s':50.1,
-/* King-x offsuit */
 'KQo':60.5,'KJo':59.2,'KTo':57.8,'K9o':55.3,'K8o':53.1,'K7o':52.0,'K6o':51.0,'K5o':50.1,'K4o':49.1,'K3o':48.4,'K2o':47.7,
-/* Queen-x suited */
 'QJs':59.1,'QTs':57.9,'Q9s':56.0,'Q8s':54.0,'Q7s':52.1,'Q6s':51.3,'Q5s':50.4,'Q4s':49.5,'Q3s':48.8,'Q2s':48.0,
-/* Queen-x offsuit */
 'QJo':57.2,'QTo':55.9,'Q9o':53.8,'Q8o':51.6,'Q7o':49.7,'Q6o':48.8,'Q5o':47.9,'Q4o':47.1,'Q3o':46.3,'Q2o':45.6,
-/* Jack-x suited */
 'JTs':57.0,'J9s':54.6,'J8s':52.3,'J7s':50.2,'J6s':48.5,'J5s':47.7,'J4s':46.9,'J3s':46.1,'J2s':45.4,
-/* Jack-x offsuit */
 'JTo':54.8,'J9o':52.1,'J8o':49.6,'J7o':47.4,'J6o':45.6,'J5o':44.8,'J4o':44.0,'J3o':43.3,'J2o':42.6,
-/* Ten-x suited */
 'T9s':54.9,'T8s':52.5,'T7s':50.1,'T6s':48.0,'T5s':46.3,'T4s':45.6,'T3s':44.9,'T2s':44.2,
-/* Ten-x offsuit */
 'T9o':52.5,'T8o':49.9,'T7o':47.4,'T6o':45.2,'T5o':43.5,'T4o':42.8,'T3o':42.1,'T2o':41.4,
-/* Nine-x suited */
 '98s':52.7,'97s':50.1,'96s':47.9,'95s':46.0,'94s':44.4,'93s':43.7,'92s':43.1,
-/* Nine-x offsuit */
 '98o':50.1,'97o':47.4,'96o':45.1,'95o':43.2,'94o':41.6,'93o':40.9,'92o':40.3,
-/* Eight-x suited */
 '87s':51.0,'86s':48.5,'85s':46.4,'84s':44.7,'83s':43.2,'82s':42.5,
-/* Eight-x offsuit */
 '87o':48.4,'86o':45.7,'85o':43.5,'84o':41.8,'83o':40.3,'82o':39.6,
-/* Seven-x suited */
 '76s':49.2,'75s':44.4,'74s':42.4,'73s':40.4,'72s':38.5,
-/* Seven-x offsuit */
 '76o':46.6,'75o':41.2,'74o':39.2,'73o':37.4,'72o':34.6,
-/* Six-x suited */
 '65s':47.4,'64s':45.3,'63s':43.6,'62s':41.9,
-/* Six-x offsuit */
 '65o':44.8,'64o':42.7,'63o':41.0,'62o':37.6,
-/* Five-x suited */
 '54s':45.7,'53s':43.9,'52s':42.0,
-/* Five-x offsuit */
 '54o':43.1,'53o':41.3,'52o':37.5,
-/* Four-x suited */
 '43s':43.5,'42s':41.5,
-/* Four-x offsuit */
 '43o':38.2,'42o':37.1,
-/* Trey-x suited */
 '32s':39.5,
-/* Trey-x offsuit */
 '32o':35.1
 };
 function holeKey(c1,c2){var r1=cR(c1),r2=cR(c2),s1=cS(c1),s2=cS(c2);var hi=Math.max(r1,r2),lo=Math.min(r1,r2);if(hi===lo)return RK[hi]+RK[lo];return RK[hi]+RK[lo]+(s1===s2?'s':'o')}
 
-/* Stats panels */
 function renderEqPanel(){
   var allHaveCards=G.players.every(function(p){return p.cards[0]>=0&&p.cards[1]>=0});
   var sp=G.tmr?' on':'';
-  /* Only show result when all players have 2 cards */
   var partialCard=G.players.some(function(p){return(p.cards[0]>=0)!==(p.cards[1]>=0);});
   if(!allHaveCards||!G.eq){
     var hintMsg=partialCard?tx('incompleteCard'):tx('nocard');
@@ -1448,8 +1505,9 @@ function renderEqPanel(){
   }
   var eq=G.eq[0];
   var w=eq.win*100,ti=eq.tie*100,lo=eq.lose*100;
-  var _approx=G.eqMeta&&!G.eqMeta.exact;
-  /* Trigger countUp animation — cancel any in-flight RAF first */
+  /* Approximate results (Monte Carlo) display as integers to reflect sampling precision */
+  var isApprox=G.eqMeta&&!G.eqMeta.exact;
+  var fmt=isApprox?0:1;
   if(window._eqRaf){cancelAnimationFrame(window._eqRaf);window._eqRaf=null;}
   (function(){
     var el2=document.querySelector('.eq-n');if(!el2)return;
@@ -1464,19 +1522,19 @@ function renderEqPanel(){
     window._eqRaf=requestAnimationFrame(step);
   })();
   var col=w>55?'var(--win)':lo>55?'var(--lose)':'var(--tie)';
-  var isApprox=G.eqMeta&&!G.eqMeta.exact;
   var approxBadge=isApprox?'<span class="ph-badge approx-badge" title="'+tx('approxNote').replace('{n}',G.eqMeta.samples)+'">≈ '+tx('approxShort')+'</span>':'';
   return'<div class="panel eq-panel"><div class="ph"><span class="ph-title">'+tx('eq')+'</span>'
     +'<span class="ph-badge" style="background:var(--winb);color:var(--win);border-color:var(--winc)">HERO</span>'
     +approxBadge
     +'</div><div class="pb">'
-    +'<div class="eq-row"><div class="eq-n" style="color:'+col+'">'+(isApprox?'≈':'')+w.toFixed(1)+'</div><div class="eq-s" style="color:'+col+'">%</div></div>'
+    +'<div class="eq-row"><div class="eq-n" style="color:'+col+'">'+(isApprox?'≈':'')+w.toFixed(fmt)+'</div><div class="eq-s" style="color:'+col+'">%</div></div>'
     +'<div class="eq-track"><div class="ew" style="flex:'+w+'"></div><div class="et" style="flex:'+ti+'"></div><div class="el" style="flex:'+Math.max(.1,lo)+'"></div></div>'
     +'<div class="wtl">'
-    +'<div class="wbox w"><div class="wn">'+(isApprox?'≈':'')+w.toFixed(1)+'</div><div class="wk">'+tx('win')+'%</div></div>'
-    +'<div class="wbox t"><div class="wn">'+(isApprox?'≈':'')+ti.toFixed(1)+'</div><div class="wk">'+tx('tie')+'%</div></div>'
-    +'<div class="wbox l"><div class="wn">'+(isApprox?'≈':'')+lo.toFixed(1)+'</div><div class="wk">'+tx('lose')+'%</div></div>'
+    +'<div class="wbox w"><div class="wn">'+(isApprox?'≈':'')+w.toFixed(fmt)+'</div><div class="wk">'+tx('win')+'%</div></div>'
+    +'<div class="wbox t"><div class="wn">'+(isApprox?'≈':'')+ti.toFixed(fmt)+'</div><div class="wk">'+tx('tie')+'%</div></div>'
+    +'<div class="wbox l"><div class="wn">'+(isApprox?'≈':'')+lo.toFixed(fmt)+'</div><div class="wk">'+tx('lose')+'%</div></div>'
     +'</div>'
+    +'<div class="eq-note">'+tx('eqNote')+'</div>'
     +'<div class="spin-r'+sp+'"><div class="spin"></div><span>'+tx('calcing')+'</span></div>'
     +'</div></div>';
 }
@@ -1490,7 +1548,6 @@ function renderHandPanel(){
     var allCards=hc.concat(cm);
     var sc=best5(allCards);
     var best5Cs=best5Cards(allCards);
-    /* Mark which cards are in the best hand */
     var used={};best5Cs.forEach(function(c){used[c]=1;});
     var cardPips=allCards.map(function(c){
       var isRed=RED[cS(c)];
@@ -1498,7 +1555,6 @@ function renderHandPanel(){
       var cls='hand-pip '+(isRed?'r':'b')+(inBest?' best':'');
       return'<span class="'+cls+'" title="'+(inBest?tx('inBestHand'):tx('notInBest'))+'">'+RK[cR(c)]+SU[cS(c)]+'</span>';
     }).join('');
-    /* Category icon */
     var cat=hcat(sc);
     var catIcons=['🃏','✌️','✌️','🔥','🌀','♠️','🏆','💎','🌊','👑'];
     body='<div class="hand-name-row">'
@@ -1509,10 +1565,8 @@ function renderHandPanel(){
       +'<div class="hand-pips">'+cardPips+'</div>'
       +'<div class="hand-legend"><span class="legend-best">■ '+tx('inBestHand')+'</span><span class="legend-dim">■ '+tx('notInBest')+'</span></div>';
   } else {
-    /* Preflop: show hand key + equity vs random */
     var key=holeKey(hc[0],hc[1]);
     var pfe=PFE[key];
-    /* Classify hole cards */
     var r1=cR(hc[0]),r2=cR(hc[1]),suited=cS(hc[0])===cS(hc[1]);
     var hiR=Math.max(r1,r2),loR=Math.min(r1,r2);
     var hcat2='';
@@ -1536,14 +1590,12 @@ function renderHandPanel(){
 function renderOutsPanel(){
   var hc=G.players[0].cards.filter(function(c){return c>=0});
   var cm=G.comm.filter(function(c){return c>=0});
-  /* Collect all villains with 2 cards dealt */
   var villains=[];
   for(var vi=1;vi<G.players.length;vi++){
     var vc2=G.players[vi].cards.filter(function(c){return c>=0});
     if(vc2.length===2)villains.push({idx:vi,cards:vc2});
   }
   if(cm.length===5&&hc.length>=2){
-    /* River dealt — show final hand comparison */
     var heroScore=best5(hc.concat(cm));var heroName=handName(heroScore);
     var resultParts=[];
     for(var vi2=0;vi2<villains.length;vi2++){
@@ -1554,13 +1606,15 @@ function renderOutsPanel(){
     return'<div class="panel"><div class="ph"><span class="ph-title">'+tx('outs')+'</span></div><div class="pb outs-pb"><div class="outs-ahead" style="margin-bottom:8px">'+tx('riverDone')+'</div>'+resultParts.join('')+'</div></div>';
   }
   if(hc.length<2||villains.length<1||(cm.length!==3&&cm.length!==4))return'';
-  /* Find the villain Hero is behind and hardest to catch (fewest outs) */
-  /* Also check all villains — hero might be ahead of V[0] but behind V[2] */
+
+  var allKnownVillainCards=[];
+  villains.forEach(function(v){allKnownVillainCards=allKnownVillainCards.concat(v.cards);});
+
   var bestOuts=null,bestOutsVIdx=villains[0].idx,vc=villains[0].cards;
   for(var vi=0;vi<villains.length;vi++){
     var vtry=villains[vi].cards;
-    var otry=countOuts(hc,vtry,cm);
-    if(otry!==null){ /* hero is behind this villain */
+    var otry=countOuts(hc,vtry,cm,allKnownVillainCards);
+    if(otry!==null){
       if(bestOuts===null||otry.length<bestOuts.length){bestOuts=otry;bestOutsVIdx=villains[vi].idx;vc=vtry;}
     }
   }
@@ -1568,23 +1622,18 @@ function renderOutsPanel(){
   var body='';
   if(outCards!==null){
     var n=outCards.length;
-    /* Count ALL known cards across every player for accurate probability */
-    var _allKn={};hc.forEach(function(c){_allKn[c]=1;});
-    G.players.forEach(function(p){p.cards.forEach(function(c){if(c>=0)_allKn[c]=1;});});
+    var _allKn={};
+    hc.forEach(function(c){_allKn[c]=1;});
+    allKnownVillainCards.forEach(function(c){_allKn[c]=1;});
     cm.forEach(function(c){_allKn[c]=1;});
     var rem=52-Object.keys(_allKn).length;
-    /* Exact probability for next card */
     var pctNext=(n/rem*100).toFixed(1);
-    /* Exact probability by showdown */
     var pctShow;
     if(cm.length===3){
-      /* 2 cards to come: P = 1 - (miss turn)*(miss river) */
       pctShow=(100*(1-((rem-n)/rem)*((rem-1-n)/(rem-1)))).toFixed(1);
     } else {
-      /* 1 card to come: same as next */
       pctShow=pctNext;
     }
-    /* Rule of 4/2 approximation */
     var ro=cm.length===3?(n*4):(n*2);
     var street=cm.length===3?tx('onTurn'):tx('onRiver');
     var streetLabel=cm.length===3?tx('byShowdown'):tx('onRiver');
@@ -1613,11 +1662,13 @@ function renderOutsPanel(){
       +'<div class="outs-rule">'+tx('rule42').replace('{ro}',ro).replace('{street}',cm.length===3?tx('r42flop'):tx('r42turn'))+'</div>'
       +(pips?'<div class="outs-cards-lbl">'+tx('outCards')+'</div><div class="out-cards">'+pips+'</div>':'');
   } else {
-    /* Hero is ahead — find most dangerous villain's outs */
     var worstV=null,worstN=0;
     for(var vi=0;vi<villains.length;vi++){
       var vct=villains[vi].cards;
-      var u2={};hc.forEach(function(c){u2[c]=1;});vct.forEach(function(c){u2[c]=1;});cm.forEach(function(c){u2[c]=1;});
+      var u2={};
+      hc.forEach(function(c){u2[c]=1;});
+      allKnownVillainCards.forEach(function(c){u2[c]=1;});
+      cm.forEach(function(c){u2[c]=1;});
       var deck2=[];for(var i=0;i<52;i++)if(!u2[i])deck2.push(i);
       var vOuts=[];
       for(var i=0;i<deck2.length;i++){
@@ -1627,8 +1678,9 @@ function renderOutsPanel(){
       if(vOuts.length>worstN){worstN=vOuts.length;worstV=villains[vi];}
     }
     var vn=worstN;
-    var _allKn2={};hc.forEach(function(c){_allKn2[c]=1;});
-    G.players.forEach(function(p){p.cards.forEach(function(c){if(c>=0)_allKn2[c]=1;});});
+    var _allKn2={};
+    hc.forEach(function(c){_allKn2[c]=1;});
+    allKnownVillainCards.forEach(function(c){_allKn2[c]=1;});
     cm.forEach(function(c){_allKn2[c]=1;});
     var vrem=52-Object.keys(_allKn2).length;
     var vpct=(vn/vrem*100).toFixed(1);
@@ -1670,7 +1722,6 @@ function potBody(){
     +'<input class="inp" id="pb" type="number" min="0" step="any" placeholder="'+tx('betlbl')+'" value="'+G.betV+'">'
     +'</div>'+res;
 }
-/* Only update pot panel DOM — avoids scroll-reset on every keystroke */
 function patchPot(){
   var el=document.getElementById('potPanelBody');
   if(el){el.innerHTML=potBody();}else{render();}
@@ -1680,7 +1731,6 @@ function renderPotPanel(){
     +'<div class="pb" id="potPanelBody">'+potBody()+'</div></div>';
 }
 
-/* ── PICKER ── */
 function renderPicker(){
   if(!G.sel)return'';
   var u={};
@@ -1705,7 +1755,6 @@ function renderPicker(){
     +'</div></div>';
 }
 
-/* ── CALC VIEW ── */
 function renderSetup(){
   var counts=[2,3,4,5,6,7,8,9];
   var labels=['Heads Up','3-Way','4-Way','5-Way','6-Way','7-Way','8-Way','9-Way'];
@@ -1744,7 +1793,6 @@ function renderCalc(){
   return grid+(G.phase==='setup'?renderSetup():'');
 }
 
-/* ── RANGE VIEW ── */
 function renderRange(){
   var hdrs='<div class="mh"></div>';for(var i=0;i<13;i++)hdrs+='<div class="mh">'+MN[i]+'</div>';
   var cells='';
@@ -1788,7 +1836,6 @@ function renderRange(){
     +'</div></div></div></div></div>';
 }
 
-/* ── ODDS VIEW ── */
 var MATCHUPS=[
   {h:'AA vs KK', w:82.4, v:16.7, t:0.9, cat:'f'},{h:'AA vs QQ', w:82.1, v:17.2, t:0.7, cat:'f'},
   {h:'KK vs QQ', w:81.9, v:17.4, t:0.7, cat:'f'},{h:'QQ vs JJ', w:81.1, v:18.2, t:0.7, cat:'f'},
@@ -1849,13 +1896,10 @@ function renderOdds(){
     +'</div></div>';
 }
 
-/* ── EMBED MODAL ── */
 function renderEmbed(){
-  return'<div class="ov on" id="embedOv"><div class="modal" style="max-width:520px;align-self:center"><div class="modal-hdr">'    +'<div><div class="modal-title">'+tx('embedTitle')+'</div><div class="modal-sub">Embed this tool</div></div>'    +'<button class="modal-x" data-action="closemodal">\u2715</button></div>'    +'<div class="sm-body">'    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">'    +'<div><div style="font-size:10px;color:var(--tx2);margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">Theme</div>'    +'<select id="emTheme" class="inp" style="width:100%;height:32px;padding:4px 8px;font-size:12px" onchange="updateEmCode()">'    +'<option value="dark">Dark</option>'    +'<option value="light">Light</option>'    +'</select></div>'    +'<div><div style="font-size:10px;color:var(--tx2);margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">Language</div>'    +'<select id="emLang" class="inp" style="width:100%;height:32px;padding:4px 8px;font-size:12px" onchange="updateEmCode()">'    +'<option value="en">English</option>'    +'<option value="zh">\u7e41\u9ad4\u4e2d\u6587</option>'    +'<option value="ja">\u65e5\u672c\u8a9e</option>'    +'<option value="ko">\ud55c\uad6d\uc5b4</option>'    +'</select></div>'    +'</div>'    +'<div class="code-box" id="emcode" style="font-size:11px;line-height:1.65;margin-bottom:10px"></div>'    +'<button class="copy-btn" id="emcopy" data-action="copytxt">'+tx('copy')+'</button>'    +'<p class="note" style="margin-top:8px">'+tx('embedParams')+'</p>'    +'</div></div></div>';
+  return'<div class="ov on" id="embedOv"><div class="modal" style="max-width:520px;align-self:center"><div class="modal-hdr">'+'<div><div class="modal-title">'+tx('embedTitle')+'</div><div class="modal-sub">Embed this tool</div></div>'+'<button class="modal-x" data-action="closemodal">\u2715</button></div>'+'<div class="sm-body">'+'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">'+'<div><div style="font-size:10px;color:var(--tx2);margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">Theme</div>'+'<select id="emTheme" class="inp" style="width:100%;height:32px;padding:4px 8px;font-size:12px" onchange="updateEmCode()">'+'<option value="dark">Dark</option>'+'<option value="light">Light</option>'+'</select></div>'+'<div><div style="font-size:10px;color:var(--tx2);margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">Language</div>'+'<select id="emLang" class="inp" style="width:100%;height:32px;padding:4px 8px;font-size:12px" onchange="updateEmCode()">'+'<option value="en">English</option>'+'<option value="zh">\u7e41\u9ad4\u4e2d\u6587</option>'+'<option value="ja">\u65e5\u672c\u8a9e</option>'+'<option value="ko">\ud55c\uad6d\uc5b4</option>'+'</select></div>'+'</div>'+'<div class="code-box" id="emcode" style="font-size:11px;line-height:1.65;margin-bottom:10px"></div>'+'<button class="copy-btn" id="emcopy" data-action="copytxt">'+tx('copy')+'</button>'+'<p class="note" style="margin-top:8px">'+tx('embedParams')+'</p>'+'</div></div></div>';
 }
 
-/* ── SHARE MODAL ── */
-/* ── TUTORIAL OVERLAY ── */
 function renderTutorial(){
   if(!G.tutActive)return'';
   var steps=tx('tutSteps');
@@ -1935,14 +1979,13 @@ function _render(){
   document.documentElement.setAttribute('data-lang',G.lang);
   document.title=tx('title');
 
-  /* Set embed code — defer to helper which also fires on selector change */
   setTimeout(updateEmCode,0);
   var su=document.getElementById('shareUrl');
   if(su)su.textContent=location.href;
 }
 
 /* ═══════════════════════════════════════════════
-   § 8  CALC SCHEDULER
+   § 8  SCHEDULER
 ═══════════════════════════════════════════════ */
 function updateEmCode(){
   var ec=document.getElementById('emcode');
@@ -1978,7 +2021,11 @@ function sched(){
   if(G.tmr)clearTimeout(G.tmr);
   G.tmr=setTimeout(function(){
     G.tmr=null;
-    try{var r=calcEq(G.players.map(function(p){return p.cards}),G.comm);G.eq=r?r.results:null;G.eqMeta=r?{exact:r.exact,samples:r.samples}:null;}
+    try{
+      var r=calcEq(G.players.map(function(p){return p.cards}),G.comm);
+      G.eq=r?r.results:null;
+      G.eqMeta=r?{exact:r.exact,samples:r.samples,nd:r.nd}:null;
+    }
     catch(e){G.eq=null;G.eqMeta=null;}
     render();
   },60);
@@ -2013,10 +2060,7 @@ document.addEventListener('click',function(e){
     pushHistory();
     var ctype=el.dataset.stype,cpidx=parseInt(el.dataset.spidx,10),cpos=parseInt(el.dataset.spos,10);
     if(ctype==='p'){G.players[cpidx].cards[cpos]=-1;}
-    else{
-      /* Community: clearing slot i also clears i+1..4 (enforce order) */
-      for(var ci=cpidx;ci<5;ci++)G.comm[ci]=-1;
-    }
+    else{for(var ci=cpidx;ci<5;ci++)G.comm[ci]=-1;}
     if(G.sel&&G.sel.type===ctype&&G.sel.pidx===cpidx&&G.sel.pos===cpos)G.sel=null;
     G.eq=null;sched();render();return;
   }
@@ -2059,7 +2103,6 @@ document.addEventListener('click',function(e){
     var vi=parseInt(el.dataset.vidx,10);
     if(vi>=1&&vi<G.players.length&&G.players.length>2){
       G.players.splice(vi,1);
-      /* If the selected slot was in the removed player, clear selection */
       if(G.sel&&G.sel.type==='p'&&G.sel.pidx===vi)G.sel=null;
       else if(G.sel&&G.sel.type==='p'&&G.sel.pidx>vi)G.sel.pidx--;
       G.eq=null;sched();render();
@@ -2071,11 +2114,9 @@ document.addEventListener('click',function(e){
   if(a==='cell'){var h=el.dataset.hand;if(G.rsel.has(h))G.rsel.delete(h);else G.rsel.add(h);G.preset=null;render();return;}
   if(a==='preset'){G.preset=el.dataset.pos;G.rsel=new Set(POS[G.preset]);render();return;}
 
-  /* Modals */
   if(a==='embed'){G.modal='embed';G.sel=null;render();return;}
   if(a==='closemodal'){G.modal=null;render();return;}
 
-  /* Copy embed code */
   if(a==='copytxt'||el.id==='emcopy'){
     var box=document.getElementById('emcode');
     if(!box)return;
@@ -2085,7 +2126,6 @@ document.addEventListener('click',function(e){
     return;
   }
 
-  /* Tutorial */
   if(a==='tutorial'){G.tutActive=true;G.tutStep=0;G.modal=null;render();return;}
   if(a==='tutskip'||a==='tutdone'){G.tutActive=false;render();return;}
   if(a==='tutnext'){var steps=tx('tutSteps');G.tutStep=Math.min(G.tutStep+1,steps.length-1);render();return;}
@@ -2101,7 +2141,6 @@ document.addEventListener('input',function(e){
   if(e.target.id==='pp'){G.potV=e.target.value;patchPot();}
   if(e.target.id==='pb'){G.betV=e.target.value;patchPot();}
 });
-/* Mobile: tap card to reveal × button */
 document.addEventListener('touchstart',function(e){
   var cw=e.target.closest('.card-wrap');
   document.querySelectorAll('.card-wrap.touched').forEach(function(el){el.classList.remove('touched');});
@@ -2126,7 +2165,6 @@ document.addEventListener('keydown',function(e){
 
 function placeCard(card){
   var sl=G.sel;if(!sl)return;
-  /* Don't push history if card is unchanged */
   var curCard=sl.type==='p'?G.players[sl.pidx].cards[sl.pos]:G.comm[sl.pos];
   if(curCard!==card)pushHistory();
   G.players.forEach(function(p){p.cards=p.cards.map(function(c){return c===card?-1:c;});});
