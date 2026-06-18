@@ -72,6 +72,9 @@ input,select{font-family:inherit}
 }
 .tab:hover{color:var(--tx);background:var(--s2)}
 .tab.on{color:var(--tx);background:var(--s3);border-color:var(--bd)}
+/* Desktop default: show full label only — icon & short label are mobile-only */
+.tab .ti{display:none}
+.tl-short{display:none}
 .hdr-end{display:flex;align-items:center;gap:6px;margin-left:auto;flex-shrink:0}
 .lang-sel{
   background:var(--s2);border:1px solid var(--bd);border-radius:var(--rs);
@@ -133,7 +136,7 @@ input,select{font-family:inherit}
 .p-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;width:100%;max-width:100%}
 .player{display:flex;flex-direction:column;align-items:center;gap:4px}
 .p-lbl{
-  font-size:9px;font-family:var(--mono);color:rgba(255,255,255,.42);
+  font-size:9px;font-family:var(--mono);color:rgba(255,255,255,.62);
   text-transform:uppercase;letter-spacing:.5px;
   background:rgba(0,0,0,.35);padding:2px 7px;border-radius:3px;white-space:nowrap;
 }
@@ -141,15 +144,19 @@ input,select{font-family:inherit}
 .p-cards{display:flex;gap:4px}
 .p-eq{
   font-family:var(--mono);font-size:11px;font-weight:700;
-  min-width:56px;text-align:center;padding:2px 8px;border-radius:3px;
-  background:rgba(0,0,0,.38);color:rgba(255,255,255,.78);
+  min-width:56px;text-align:center;padding:3px 8px;border-radius:3px;
+  background:rgba(0,0,0,.38);color:rgba(255,255,255,.78);cursor:help;
+}
+.p-eq-k{
+  display:block;font-family:var(--body);font-size:7px;font-weight:600;
+  letter-spacing:.5px;text-transform:uppercase;opacity:.6;margin-bottom:1px;
 }
 .p-eq.ew{background:rgba(63,185,80,.2);color:#6be07c;border:1px solid rgba(63,185,80,.35)}
 .p-eq.el{background:rgba(248,81,73,.18);color:#ff8077;border:1px solid rgba(248,81,73,.3)}
 
 /* Community zone */
 .comm-zone{display:flex;flex-direction:column;align-items:center;gap:5px;width:100%}
-.comm-lbl{font-size:8px;font-family:var(--mono);color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:2px}
+.comm-lbl{font-size:9px;font-family:var(--mono);color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:2px}
 .comm-cards{display:flex;gap:4px;justify-content:center}
 .street-row{display:flex;gap:4px}
 .slbl{width:48px;text-align:center;font-size:7px;font-family:var(--mono);color:rgba(255,255,255,.18);text-transform:uppercase;letter-spacing:.3px}
@@ -280,9 +287,19 @@ input,select{font-family:inherit}
   display:flex;align-items:center;justify-content:space-between;
   padding:8px 13px;border-bottom:1px solid var(--bd);background:var(--s2);
 }
-.ph-title{font-family:var(--mono);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--mu)}
+.ph-title{font-family:var(--mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--tx2)}
 .ph-badge{font-family:var(--mono);font-size:9px;padding:1px 7px;border-radius:10px;border:1px solid}
 .pb{padding:12px 13px}/* panel body */
+/* Inline help affordance */
+.help-t{cursor:help}
+.help-i{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:13px;height:13px;border-radius:50%;background:var(--s3);
+  border:1px solid var(--bd2);color:var(--mu);font-size:9px;font-weight:700;
+  letter-spacing:0;line-height:1;flex-shrink:0;vertical-align:middle;margin-left:2px;
+}
+.help-t:hover .help-i{color:var(--acc);border-color:var(--acc)}
+.panel-help{font-size:11px;color:var(--tx2);line-height:1.5;margin-bottom:10px}
 
 /* Equity */
 .eq-row{display:flex;align-items:baseline;gap:3px;margin-bottom:8px}
@@ -297,7 +314,7 @@ input,select{font-family:inherit}
 .wbox.w{background:var(--winb);border-color:var(--winc)} .wbox.t{background:var(--tieb);border-color:var(--tiec)} .wbox.l{background:var(--loseb);border-color:var(--losec)}
 .wn{font-family:var(--mono);font-size:16px;font-weight:700;line-height:1;margin-bottom:1px}
 .wbox.w .wn{color:var(--win)} .wbox.t .wn{color:var(--tie)} .wbox.l .wn{color:var(--lose)}
-.wk{font-size:8px;color:var(--mu);text-transform:uppercase;letter-spacing:.5px}
+.wk{font-size:10px;font-weight:600;color:var(--tx2);text-transform:uppercase;letter-spacing:.5px}
 .hint{text-align:center;padding:12px 8px;color:var(--mu);font-size:12px;line-height:1.7}
 .spin-r{display:none;align-items:center;gap:6px;font-size:10px;color:var(--mu);margin-top:6px}
 .spin-r.on{display:flex}
@@ -312,20 +329,20 @@ input,select{font-family:inherit}
   font-family:var(--mono);font-size:17px;font-weight:700;
   color:var(--tx);line-height:1.2;
 }
-.hand-sub{font-size:10px;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
-.hand-pips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px}
+.hand-sub{font-size:10px;color:var(--tx2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.hand-pips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
 .hand-pip{
   font-family:var(--mono);font-size:14px;font-weight:700;
   padding:5px 8px;border-radius:6px;line-height:1.1;
   background:var(--s3);border:1.5px solid var(--bd);
-  opacity:.4;
+  opacity:.32;filter:grayscale(.55);transition:transform .1s;
 }
-.hand-pip.best{opacity:1;border-width:2px}
+.hand-pip.best{opacity:1;filter:none;border-width:2px;transform:translateY(-2px);box-shadow:0 3px 8px rgba(0,0,0,.35)}
 .hand-pip.r{color:#e05555}
-.hand-pip.r.best{background:rgba(224,85,85,.1);border-color:rgba(224,85,85,.45)}
+.hand-pip.r.best{background:rgba(224,85,85,.14);border-color:#e05555}
 .hand-pip.b{color:var(--tx)}
-.hand-pip.b.best{background:var(--accb);border-color:rgba(88,166,255,.4)}
-.hand-legend{display:flex;gap:12px;font-size:9px;margin-top:2px}
+.hand-pip.b.best{background:var(--accb);border-color:var(--acc)}
+.hand-legend{display:flex;gap:12px;font-size:10px;margin-top:2px}
 .legend-best{color:var(--acc);letter-spacing:.2px}
 .legend-dim{color:var(--mu);letter-spacing:.2px}
 .hand-pf{display:flex;align-items:center;justify-content:space-between;
@@ -338,13 +355,13 @@ input,select{font-family:inherit}
 .outs-header{display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--bd);margin-bottom:10px}
 .outs-count-block{display:flex;flex-direction:column;align-items:center;min-width:52px}
 .outs-num{font-family:var(--mono);font-size:46px;font-weight:700;color:var(--acc);line-height:1}
-.outs-unit{font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;margin-top:1px}
+.outs-unit{font-size:10px;font-weight:600;color:var(--tx2);text-transform:uppercase;letter-spacing:.5px;margin-top:1px}
 .outs-prob-grid{display:flex;flex-direction:column;gap:8px;flex:1}
 .outs-prob-item{display:flex;align-items:baseline;gap:6px}
 .outs-prob-pct{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--tx);line-height:1;min-width:56px}
-.outs-prob-lbl{font-size:10px;color:var(--mu);line-height:1.3}
-.outs-rule{font-size:10px;color:var(--mu);padding:5px 8px;background:var(--s2);border-radius:var(--rs);border:1px solid var(--bd);margin-bottom:8px;line-height:1.5}
-.outs-cards-lbl{font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.outs-prob-lbl{font-size:11px;color:var(--tx2);line-height:1.3}
+.outs-rule{font-size:11px;color:var(--tx2);padding:6px 9px;background:var(--s2);border-radius:var(--rs);border:1px solid var(--bd);margin-bottom:8px;line-height:1.5}
+.outs-cards-lbl{font-size:10px;color:var(--tx2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
 .outs-ahead{
   text-align:center;padding:14px 0;
   font-family:var(--mono);font-size:13px;font-weight:700;color:var(--win);
@@ -722,6 +739,10 @@ en:{
   selTip:'Click any card to select. Used cards are dimmed.',
   eq:'HERO EQUITY',
   win:'WIN', tie:'TIE', lose:'LOSE',
+  pWin:'Win', pWinHelp:'This player\'s chance to win the hand',
+  eqHelp:'Equity = your overall chance to win the pot. WIN + TIE + LOSE add up to 100%.',
+  outsDesc:'Outs = cards still in the deck that turn your losing hand into the winner.',
+  rule42Help:'Quick mental math: multiply your outs by 4 on the flop, or by 2 on the turn, to estimate your %.',
   calcing:'Calculating…',
   nocard:'Click any card slot to start',
   hand:'BEST HAND',
@@ -833,6 +854,10 @@ zh:{
   selTip:'點選牌面加入。已使用的牌顯示為暗色。',
   eq:'我方勝率',
   win:'勝', tie:'和局', lose:'敗',
+  pWin:'勝率', pWinHelp:'這位玩家贏得此牌局的機率',
+  eqHelp:'勝率（Equity）＝你最終贏得底池的整體機率。勝＋和＋敗合計為 100%。',
+  outsDesc:'補牌（Outs）＝牌堆裡還能讓你從落後反超為贏家的牌。',
+  rule42Help:'心算速估：翻牌圈把補牌數 ×4、轉牌圈 ×2，即可估出大約勝率。',
   calcing:'計算中…',
   nocard:'點擊牌位開始選牌',
   hand:'最佳手牌',
@@ -944,6 +969,10 @@ ja:{
   selTip:'カードをクリックして選択。使用済みはグレーで表示されます。',
   eq:'自分のエクイティ',
   win:'勝ち', tie:'引き分け', lose:'負け',
+  pWin:'勝率', pWinHelp:'このプレイヤーがハンドに勝つ確率',
+  eqHelp:'エクイティ＝ポットを獲得する総合的な確率。勝ち＋引き分け＋負けで100%になります。',
+  outsDesc:'アウツ＝デッキに残っている、逆転勝ちにつながるカードのこと。',
+  rule42Help:'暗算の目安：フロップではアウツ×4、ターンでは×2でおおよその％を推定できます。',
   calcing:'計算中…',
   nocard:'カードスロットをクリックして始める',
   hand:'ベストハンド',
@@ -1055,6 +1084,10 @@ ko:{
   selTip:'카드를 클릭해서 선택하세요. 이미 사용 중인 카드는 흐리게 표시됩니다.',
   eq:'내 에쿼티',
   win:'승', tie:'무승부', lose:'패',
+  pWin:'승률', pWinHelp:'이 플레이어가 핸드에서 이길 확률',
+  eqHelp:'에쿼티＝팟을 차지할 전체 확률입니다. 승＋무＋패 합이 100%가 됩니다.',
+  outsDesc:'아웃츠＝덱에 남아 역전승으로 이어질 수 있는 카드입니다.',
+  rule42Help:'간단 암산: 플랍에서는 아웃츠×4, 턴에서는 ×2로 대략적인 %를 추정합니다.',
   calcing:'계산 중…',
   nocard:'카드 슬롯을 클릭해서 시작하세요',
   hand:'베스트 핸드',
@@ -1348,7 +1381,7 @@ function renderFelt(){
   for(var i=1;i<G.players.length;i++){
     var p=G.players[i];
     var eq=G.eq?G.eq[i]:null;
-    var et=eq?((eq.win*100).toFixed(1)+'%'+(eq.tie>0.001?'<br><span class="p-eq-tie">T:'+( eq.tie*100).toFixed(1)+'%</span>':'')):' —';
+    var et=eq?('<span class="p-eq-k">'+tx('pWin')+'</span>'+(eq.win*100).toFixed(1)+'%'+(eq.tie>0.001?'<br><span class="p-eq-tie">T:'+(eq.tie*100).toFixed(1)+'%</span>':'')):' —';
     var ec=eq?(eq.win>0.55?' ew':eq.lose>0.55?' el':''):'';
     var lbl=G.players.length>2?(tx('vill')+' '+i):tx('vill');
     /* × button to delete this specific villain */
@@ -1356,7 +1389,7 @@ function renderFelt(){
     opp+='<div class="player">'
       +'<div class="p-lbl-wrap"><div class="p-lbl">'+lbl+'</div>'+del+'</div>'
       +'<div class="p-cards">'+mkCardEl(p.cards[0],'p',i,0)+mkCardEl(p.cards[1],'p',i,1)+'</div>'
-      +'<div class="p-eq'+ec+'">'+et+'</div></div>';
+      +'<div class="p-eq'+ec+'" title="'+tx('pWinHelp')+'">'+et+'</div></div>';
   }
   /* Add player button — only if <6 players */
   var addBtn=G.players.length<9
@@ -1364,12 +1397,12 @@ function renderFelt(){
 
   var h=G.players[0];
   var heq=G.eq?G.eq[0]:null;
-  var het=heq?((heq.win*100).toFixed(1)+'%'+(heq.tie>0.001?'<br><span class="p-eq-tie">T:'+(heq.tie*100).toFixed(1)+'%</span>':'')):' —';
+  var het=heq?('<span class="p-eq-k">'+tx('pWin')+'</span>'+(heq.win*100).toFixed(1)+'%'+(heq.tie>0.001?'<br><span class="p-eq-tie">T:'+(heq.tie*100).toFixed(1)+'%</span>':'')):' —';
   var hec=heq?(heq.win>0.55?' ew':heq.lose>0.55?' el':''):'';
   var hero='<div class="player">'
     +'<div class="p-lbl hero">'+tx('hero')+'</div>'
     +'<div class="p-cards">'+mkCardEl(h.cards[0],'p',0,0)+mkCardEl(h.cards[1],'p',0,1)+'</div>'
-    +'<div class="p-eq'+hec+'">'+het+'</div></div>';
+    +'<div class="p-eq'+hec+'" title="'+tx('pWinHelp')+'">'+het+'</div></div>';
 
   var cc='',st='';
   for(var i=0;i<5;i++){
@@ -1482,7 +1515,7 @@ function renderEqPanel(){
   var col=w>55?'var(--win)':lo>55?'var(--lose)':'var(--tie)';
   var isApprox=G.eqMeta&&!G.eqMeta.exact;
   var approxBadge=isApprox?'<span class="ph-badge approx-badge" title="'+tx('approxNote').replace('{n}',G.eqMeta.samples)+'">≈ '+tx('approxShort')+'</span>':'';
-  return'<div class="panel eq-panel"><div class="ph"><span class="ph-title">'+tx('eq')+'</span>'
+  return'<div class="panel eq-panel"><div class="ph"><span class="ph-title help-t" title="'+tx('eqHelp')+'">'+tx('eq')+' <span class="help-i">?</span></span>'
     +'<span class="ph-badge" style="background:var(--winb);color:var(--win);border-color:var(--winc)">HERO</span>'
     +approxBadge
     +'</div><div class="pb">'
@@ -1626,7 +1659,7 @@ function renderOutsPanel(){
         +'</div>':'')
       +'</div>'
       +'</div>'
-      +'<div class="outs-rule">'+tx('rule42').replace('{ro}',ro).replace('{street}',cm.length===3?tx('r42flop'):tx('r42turn'))+'</div>'
+      +'<div class="outs-rule help-t" title="'+tx('rule42Help')+'">'+tx('rule42').replace('{ro}',ro).replace('{street}',cm.length===3?tx('r42flop'):tx('r42turn'))+' <span class="help-i">?</span></div>'
       +(pips?'<div class="outs-cards-lbl">'+tx('outCards')+'</div><div class="out-cards">'+pips+'</div>':'');
   } else {
     /* Hero is ahead — find most dangerous villain's outs */
@@ -1663,8 +1696,8 @@ function renderOutsPanel(){
       +'</div>';
   }
   var vsTag=villains.length>1&&outCards!==null?' <span class="ph-badge" style="background:var(--accb);color:var(--acc);border-color:rgba(88,166,255,.3);font-size:9px">vs '+tx('vill')+' '+bestOutsVIdx+'</span>':'';
-  return'<div class="panel"><div class="ph"><span class="ph-title">'+tx('outs')+'</span>'+vsTag+'</div>'
-    +'<div class="pb outs-pb">'+body+'</div></div>';
+  return'<div class="panel"><div class="ph"><span class="ph-title help-t" title="'+tx('outsDesc')+'">'+tx('outs')+' <span class="help-i">?</span></span>'+vsTag+'</div>'
+    +'<div class="pb outs-pb"><p class="panel-help">'+tx('outsDesc')+'</p>'+body+'</div></div>';
 }
 
 function potResultHTML(){
