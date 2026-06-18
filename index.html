@@ -380,6 +380,9 @@ input,select{font-family:inherit}
 
 /* Pot odds */
 .pi{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px}
+.pot-desc{font-size:11px;color:var(--mu);line-height:1.5;margin-bottom:8px}
+.pot-labels{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:3px}
+.pot-lbl{font-size:10px;color:var(--mu);font-weight:600;letter-spacing:.5px;text-transform:uppercase}
 .inp{
   background:var(--s2);border:1px solid var(--bd);border-radius:var(--rs);
   padding:6px 9px;color:var(--tx);font-size:12px;outline:none;
@@ -728,10 +731,11 @@ en:{
   nextCard:'Next card chance',
   byRiver:'By river (rule 4/2)',
   pot:'POT ODDS',
-  potlbl:'Pot', betlbl:'Call size',
+  potlbl:'Pot size', betlbl:'Call amount',
+  potdesc:'Enter the pot size and the amount to call — we\'ll show the minimum equity needed to make this call profitable.',
   potmsg:'You need {n}% equity to call',
   yourEq:'Your equity',
-  noResult:'Enter pot & call amounts',
+  noResult:'Fill in both fields above to calculate.',
   ri:'Hand Range Heatmap',
   rtip:'<b>How to use:</b> Click cells to toggle hands. Use position presets to load GTO opening ranges. Darker colour = stronger hand class.',
   rpos:'POSITION PRESETS',
@@ -838,10 +842,11 @@ zh:{
   nextCard:'下張牌命中率',
   byRiver:'到河牌機率',
   pot:'底池賠率',
-  potlbl:'底池', betlbl:'跟注金額',
+  potlbl:'底池大小', betlbl:'跟注金額',
+  potdesc:'輸入目前底池大小與你需要跟注的金額，即可算出這次跟注所需的最低勝率。',
   potmsg:'跟注需要至少 {n}% 勝率',
   yourEq:'你的勝率',
-  noResult:'請輸入底池與跟注金額',
+  noResult:'請填寫上方兩個欄位以計算。',
   ri:'起手牌範圍熱圖',
   rtip:'<b>使用說明：</b>點擊格子切換是否選入手牌範圍。可套用位置預設來載入 GTO 開牌範圍，顏色越深表示牌力越強。',
   rpos:'位置預設',
@@ -948,10 +953,11 @@ ja:{
   nextCard:'次のカードで引ける確率',
   byRiver:'リバーまでの確率',
   pot:'ポットオッズ',
-  potlbl:'ポット', betlbl:'コール額',
+  potlbl:'ポットサイズ', betlbl:'コール額',
+  potdesc:'ポットサイズとコール額を入力すると、コールに必要な最小エクイティが自動で算出されます。',
   potmsg:'コールに必要なエクイティ：{n}%',
   yourEq:'自分のエクイティ',
-  noResult:'ポットとコール額を入力してください',
+  noResult:'上の両方の欄を入力してください。',
   ri:'ハンドレンジ ヒートマップ',
   rtip:'<b>使い方：</b>セルをクリックしてレンジのオン/オフを切り替え。ポジションプリセットでGTOオープニングレンジを読み込めます。色が濃いほど強いハンドです。',
   rpos:'ポジション別プリセット',
@@ -1058,10 +1064,11 @@ ko:{
   nextCard:'다음 카드 히트 확률',
   byRiver:'리버까지 확률',
   pot:'팟 오즈',
-  potlbl:'팟', betlbl:'콜 금액',
+  potlbl:'팟 크기', betlbl:'콜 금액',
+  potdesc:'팟 크기와 콜 금액을 입력하면 이 콜에 필요한 최소 에쿼티가 계산됩니다.',
   potmsg:'콜하려면 에쿼티 {n}% 이상 필요',
   yourEq:'내 에쿼티',
-  noResult:'팟 크기와 콜 금액을 입력하세요',
+  noResult:'위 두 항목을 모두 입력해주세요.',
   ri:'핸드 레인지 히트맵',
   rtip:'<b>사용법:</b> 셀을 클릭해서 핸드를 선택/해제하세요. 포지션 프리셋으로 GTO 오프닝 레인지를 불러올 수 있습니다. 색이 진할수록 강한 핸드입니다.',
   rpos:'포지션 프리셋',
@@ -1659,9 +1666,8 @@ function renderOutsPanel(){
     +'<div class="pb outs-pb">'+body+'</div></div>';
 }
 
-function potBody(){
+function potResultHTML(){
   var pot=parseFloat(G.potV)||0,bet=parseFloat(G.betV)||0;
-  var res='';
   if(pot>0&&bet>0){
     var need=(bet/(pot+bet)*100).toFixed(1);
     var msg=tx('potmsg').replace('{n}','<b>'+need+'%</b>');
@@ -1669,19 +1675,27 @@ function potBody(){
     var ok=eq0!==null&&parseFloat(eq0)>=parseFloat(need);
     var cls=eq0!==null?(ok?' ok':' no'):'';
     var icon=eq0!==null?(ok?' \u2705':' \u274C'):'';
-    res='<div class="pr'+cls+'">'+msg+icon+(eq0!==null?'<br>'+tx('yourEq')+': <b>'+eq0.toFixed(1)+'%</b>':'')+'</div>';
-  } else if(!G.potV&&!G.betV){
-    res='<div style="font-size:11px;color:var(--mu);margin-top:4px">'+tx('noResult')+'</div>';
+    return'<div class="pr'+cls+'">'+msg+icon+(eq0!==null?'<br>'+tx('yourEq')+': <b>'+eq0.toFixed(1)+'%</b>':'')+'</div>';
   }
-  return '<div class="pi">'
-    +'<input class="inp" id="pp" type="number" min="0" step="any" placeholder="'+tx('potlbl')+'" value="'+G.potV+'">'
-    +'<input class="inp" id="pb" type="number" min="0" step="any" placeholder="'+tx('betlbl')+'" value="'+G.betV+'">'
-    +'</div>'+res;
+  if(!G.potV&&!G.betV){
+    return'<div style="font-size:11px;color:var(--mu);margin-top:4px">'+tx('noResult')+'</div>';
+  }
+  return'';
 }
-/* Only update pot panel DOM — avoids scroll-reset on every keystroke */
+function potBody(){
+  return'<p class="pot-desc">'+tx('potdesc')+'</p>'
+    +'<div class="pot-labels"><span class="pot-lbl">'+tx('potlbl')+'</span><span class="pot-lbl">'+tx('betlbl')+'</span></div>'
+    +'<div class="pi">'
+    +'<input class="inp" id="pp" type="number" min="0" step="any" placeholder="0" value="'+G.potV+'">'
+    +'<input class="inp" id="pb" type="number" min="0" step="any" placeholder="0" value="'+G.betV+'">'
+    +'</div>'
+    +'<div id="potResult">'+potResultHTML()+'</div>';
+}
+/* Only update result div — leaves input elements untouched so focus/caret are preserved */
 function patchPot(){
-  var el=document.getElementById('potPanelBody');
-  if(el){el.innerHTML=potBody();}else{render();}
+  var res=document.getElementById('potResult');
+  if(res){res.innerHTML=potResultHTML();}
+  else{var el=document.getElementById('potPanelBody');if(el){el.innerHTML=potBody();}else{render();}}
 }
 function renderPotPanel(){
   return'<div class="panel"><div class="ph"><span class="ph-title">'+tx('pot')+'</span></div>'
