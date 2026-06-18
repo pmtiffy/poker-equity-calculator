@@ -156,19 +156,20 @@ input,select{font-family:inherit}
 
 /* ── CARDS ── */
 .card-wrap{position:relative;display:inline-flex;flex-shrink:0}
-.card-wrap:hover .card-clr,.card-wrap.touched .card-clr{
+.card-clr{
   position:absolute;top:-5px;right:-5px;
   width:15px;height:15px;border-radius:50%;
   background:var(--lose);border:1.5px solid var(--bg);
   color:#fff;font-size:10px;line-height:1;
-  display:flex;align-items:center;justify-content:center;
+  display:none;align-items:center;justify-content:center;
   cursor:pointer;opacity:0;transition:opacity .12s;
   z-index:10;
 }
 .card-clr::after{
-  content:'';position:absolute;inset:-12px;border-radius:50%;
+  content:'';position:absolute;inset:-6px;border-radius:50%;
 }
-.card-clr:hover{filter:brightness(1.15);opacity:1!important}
+.card-wrap:hover .card-clr,.card-wrap.touched .card-clr{display:flex;opacity:1}
+.card-clr:hover{filter:brightness(1.2)}
 .card{
   width:48px;height:68px;
   background:#fff;border-radius:6px;
